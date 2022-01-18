@@ -1,0 +1,10 @@
+/*
+custom.css
+Surcharge Bootstrap
+*/
+
+:root {
+    --bs-primary: red;
+    --bs-secondary: green;
+}
+
