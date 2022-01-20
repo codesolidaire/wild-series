@@ -2,6 +2,8 @@
 // src/Controller/ProgramController.php
 namespace App\Controller;
 
+use App\Entity\Program;
+use App\Repository\ProgramRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -12,22 +14,39 @@ use Symfony\Component\Routing\Annotation\Route;
 class ProgramController extends AbstractController
 {
     /**
+     * Show all rows from Program’s entity
+     *
      * @Route("/", name="index")
      */
-    public function index(): Response
+    public function index(ProgramRepository $programRepository): Response
     {
-        return $this->render('program/index.html.twig', [
-            'website' => 'Wild Séries',
-        ]);
+        $programs = $programRepository->findAll();
+
+        return $this->render(
+            'program/index.html.twig',
+            ['programs' => $programs]
+        );
     }
 
     /**
-     * @Route("/{id}/{page<\d+>?1}", methods={"GET"}, name="show")
+     * @Route("/show/{id<\d+>}/", methods={"GET"}, name="show")
+     * Comment éviter id = 0?
+     * Comment mettre par défaut 1 (?1)?
+     * Comment forcer affichage URL lors de /show/ après avoir mis une valeur par défaut?
      */
-    public function show(int $id, int $page = 1): Response
+    public function show(int $id, ProgramRepository $programRepository): Response
     {
-            return $this->render('program/show.html.twig', [
-            'id' => $id,
-            'page' => $page]);
+        $program = $programRepository->findOneBy(['id' => $id]);
+        //$program = $programRepository->findOneById($id);
+
+        if (!$program) {
+            throw $this->createNotFoundException(
+                'No program with id : ' . $id . ' found in program\'s table.'
+            );
+        }
+
+        return $this->render('program/show.html.twig', [
+        'program' => $program,
+        ]);
     }
 }
