@@ -18,10 +18,8 @@ class CategoryController extends Abs
      */
     public function index(CategoryRepository $categoryRepository): Response
     {
-        $categories = $categoryRepository->findAll();
-
         return $this->render('category/index.html.twig', [
-            'categories' => $categories,
+            'categories' => $categoryRepository->findAll(),
         ]);
     }
 
