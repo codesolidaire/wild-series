@@ -8,6 +8,13 @@
         <div class="media-body">
             <h1 class="mt-0">{{ program.title }}</h1>
             <p>{{ program.summary }}</p>
+            <ul>
+                {% for season in seasons %}
+                    <li>
+                        <a href="#">Saison: {{ season.number }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
             <p>Catégorie : {{ program.category.name }}</p>
         </div>
     </div>
