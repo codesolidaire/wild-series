@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ProgramRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -37,6 +39,16 @@ class Program
      * @ORM\JoinColumn(nullable=false)
      */
     private $category;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Season::class, mappedBy="program", orphanRemoval=true)
+     */
+    private $program;
+
+    public function __construct()
+    {
+        $this->program = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -87,6 +99,36 @@ class Program
     public function setCategory(?Category $category): self
     {
         $this->category = $category;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Season[]
+     */
+    public function getProgram(): Collection
+    {
+        return $this->program;
+    }
+
+    public function addProgram(Season $program): self
+    {
+        if (!$this->program->contains($program)) {
+            $this->program[] = $program;
+            $program->setProgram($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProgram(Season $program): self
+    {
+        if ($this->program->removeElement($program)) {
+            // set the owning side to null (unless already changed)
+            if ($program->getProgram() === $this) {
+                $program->setProgram(null);
+            }
+        }
 
         return $this;
     }
